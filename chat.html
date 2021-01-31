@@ -1,0 +1,66 @@
+<html>
+<heaad>
+   <script src="https://cdn.pubnub.com/sdk/javascript/pubnub.4.28.2.min.js"></script> 
+  <script type='text/javascript' src='https://cdn.scaledrone.com/scaledrone.min.js'></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+<style>
+
+.form-inline {  
+		  top:10px;
+		  left:100px;
+		  
+		  
+		}
+</style>
+ <button onclick="refresh()" ><b>CLEAR </button>
+
+
+  <textarea id=input placeholder="Type message..." >
+  </textarea><br>
+ <div class="form-inline" id=box></div> 
+  
+
+  
+ 
+  
+  <script>(function() {
+        var pubnub = new PubNub({
+            publishKey: 'pub-c-4fee33de-8c8e-4330-98ff-65718c1caa7e',
+            subscribeKey: 'sub-c-a872e15a-2c12-11eb-ae78-c6faad964e01'
+        });
+        function $(id) {
+            return document.getElementById(id);
+        }
+        var box = $('box'),
+            input = $('input'),
+            channel = '18chat-demo';
+        pubnub.addListener({
+            message: function(obj) {
+			    
+                box.innerHTML = (obj.message ).replace(/[<>]/g, '') + '<br>' + box.innerHTML + '<br>'
+            }
+        });
+        pubnub.subscribe({
+            channels: [channel]
+        });
+        input.addEventListener('keyup', function(e) {
+            if ((e.keyCode || e.charCode) === 13) {
+                pubnub.publish({
+                    channel: channel,
+                    message: input.value,
+                    x: (input.value = '')
+                });
+            }
+        });
+    })();
+	
+	function refresh()
+     {
+         location.reload();
+    }
+	
+	
+  </script>
+  </body>
+  </html>
